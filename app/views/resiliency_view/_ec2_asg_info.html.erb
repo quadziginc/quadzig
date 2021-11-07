@@ -1,0 +1,79 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @asg.auto_scaling_group_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:ec2_asg, @asg.auto_scaling_group_name, @asg.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @asg } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Availability Zones</h5>
+      </div>
+      <% if @asg.availability_zones.count == 1 %>
+        <h5>
+          <span class="badge-lg badge badge-danger">
+            Single AZ
+          </span>
+          <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="This ASG only launches EC2 instances in a single AZs. The recommended practice is to spread your instances over multiple AZs to protect against AZ level failures."></i>
+        </h5>
+      <% else %>
+        <h5><span class="badge-lg badge badge-success">Multiple AZs</span></h5>
+      <% end %>
+      <%= @asg.availability_zones.join(', ') %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Metrics Enabled</h5>
+      </div>
+      <% if @asg.enabled_metrics.empty? %>
+        <h5>
+          <span class="badge-lg badge badge-danger">
+            Disabled
+          </span>
+          <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="ASG monitoring at 1 minute granularity provides better visibility into your ASG at no additional cost."></i></a>
+        </h5>
+      <% else %>
+        <h5><span class="badge-lg badge badge-success">Enabled</span></h5>
+      <% end %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Capacity Rebalance</h5>
+      </div>
+      <% if @asg.capacity_rebalance %>
+        <h5><span class="badge-lg badge badge-success">Enabled</span></h5>
+      <% else %>
+      <h5>
+        <span class="badge-lg badge badge-warning">
+          Disabled
+        </span>
+        <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/capacity-rebalance.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="If you are using Spot Instances in your ASG, enable capacity rebalancing to protect against Spot Instance termination."></i></a>
+      </h5>
+      <% end %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Suspended Processes</h5>
+      </div>
+      <% if @asg.suspended_processes.empty? %>
+        <h5><span class="badge-lg badge badge-success">No Processes Suspended</span></h5>
+      <% else %>
+        <h5>
+          <span class="badge-lg badge badge-warning">
+            Found Suspended Processes!
+          </span>
+          <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-suspend-resume-processes.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="Found suspended processes in your ASG. This could be enabled by you intentionally or could be enforced by AWS due to repeated failures to launch new instances(Administrative Suspension)."></i></a>
+        </h5>
+        <span class="font-weight-bold">Processes: </span><%= @asg.suspended_processes.map { |p| p["process_name"] }.join(', ') %>
+      <% end %>
+    </div>
+    <%= render_annotation_for(@asg) %>
+  </div>
+</div>

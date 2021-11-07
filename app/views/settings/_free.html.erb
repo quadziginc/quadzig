@@ -1,0 +1,49 @@
+<%# Used by prices.js to get the Stripe Publishable Key & Stripe price ID %>
+<%# TODO: Not the safest. Come back to this later %>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h4>Subscription</h4>
+      </div>
+      <div class="card-body">
+        <div class="list-group">
+          <div class="list-group-item">
+            <h5>Email ID</h5>
+            <p><%= @current_user.email %></p>
+          </div>
+          <div class="list-group-item">
+            <h5>Tier</h5>
+            <h5>
+              <span class="badge badge-primary"><%= @current_user.subscription.tier.capitalize %></span>
+              <% if @current_user.in_early_access_period? %>
+                <span class="badge badge-primary">early-access</span>
+                <i class="fa ml-1 fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="You have Enterprise benefits due to early access sign up till <%= (@current_user.created_at + 93.days).to_date %>"></i>
+              <% end %>
+            </h5>
+          </div>
+          <% if !@current_user.in_early_access_period? %>
+            <div class="list-group-item">
+              <h5 class="d-inline">Free Tier Usage</h5><i class="fa ml-1 fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="As part of Free tier, you can visualize up to 3 AWS Accounts."></i>
+                <p><%=  @aws_accounts_count > 3 ? 3 : @aws_accounts_count %>/3 Free Accounts used up.</p>
+            </div>
+          <% end %>
+          <li class="list-group-item">
+            <h5>Upgrade to Enterprise Tier</h5>
+            <p>You can upgrade to Enterprise plan to visualize more than 3 AWS Accounts. Subscribe only to the number of AWS Accounts you need. You can change your subscription any time.</p>
+            <% if @user_not_setup_yet %>
+              <button id="upgradeSubscription" disabled class="w-100 btn btn-success" type="submit">Upgrade Subscription</button>
+              <small>We are still setting up your account. You should be able to upgrade your subscription shortly.</small>
+            <% else %>
+              <button id="upgradeSubscription" class="w-100 btn btn-success" type="submit">Upgrade Subscription</button>
+            <% end %>
+          </li>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <%= render 'mfa' %>
+  </div>
+</div>
+<%= javascript_pack_tag 'free_prices' %>

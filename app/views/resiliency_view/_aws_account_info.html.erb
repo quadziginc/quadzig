@@ -1,0 +1,17 @@
+<div class="card-header">
+  <h4 class="card-title">
+    <%= @account.name %>
+  </h4>
+</div>
+<div class="card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Account ID</h5>
+      </div>
+      <p class="mb-0"><%= @account.account_id %></p>
+    </div>
+    <%= render_annotation_for(@account) %>
+  </div>
+</div>
+

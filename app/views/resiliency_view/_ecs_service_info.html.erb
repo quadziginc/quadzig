@@ -1,0 +1,64 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @service.service_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= ecs_service_console_link(@service) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @service } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <!-- For Fargate, minimum health percentage value does not matter -->
+    <% unless @service.launch_type == "FARGATE" %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Minimum Healthy Percentage</h5>
+        </div>
+        <% service_min_healthy_percent = @service.deployment_configuration["minimum_healthy_percent"] %>
+        <!-- Order of these conditions are important -->
+        <% if service_min_healthy_percent < 50 %>
+          <h5><span class="badge-lg badge badge-danger"><%= service_min_healthy_percent %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Having a minimum healthy percent of less than 100 means you will have reduced capacity during deployments."></i></h5>
+        <% elsif service_min_healthy_percent < 75 %>
+          <h5><span class="badge-lg badge badge-warning"><%= service_min_healthy_percent %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Having a minimum healthy percent of less than 100 means you will have reduced capacity during deployments."></i></h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-success"><%= service_min_healthy_percent %></span></h5>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Circuit Breaker</h5>
+      </div>
+      <% if @service.deployment_configuration["deployment_circuit_breaker"]["enabled"] %>
+        <h5><span class="badge badge-success mb-0"><%= "enabled" %></span></h5>
+      <% else %>
+        <h5><span class="badge badge-danger mb-0"><%= "disabled" %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Enable Circuit Breaker to detect unhealthy deployments quickly."></i></h5>
+      <% end %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Failed Tasks<i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Shows how many tasks failed from the most recent deployment."></i></h5>
+      </div>
+      <% if @failed_tasks > 0 %>
+        <h5><span class="badge badge-danger mb-0"><%= @failed_tasks %></span></h5>
+      <% else %>
+        <h5><span class="badge badge-success mb-0"><%= @failed_tasks %></span></h5>
+      <% end %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Circuit Breaker Rollback</h5>
+      </div>
+      <% if @service.deployment_configuration["deployment_circuit_breaker"]["rollback"] %>
+        <h5><span class="badge badge-success mb-0"><%= "enabled" %></span></h5>
+      <% else %>
+        <h5><span class="badge badge-warning mb-0"><%= "disabled" %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Enable Circuit Breaker Rollback to automatically rollback unhealthy deployments."></i></h5>
+      <% end %>
+    </div>
+    <%= render_annotation_for(@service) %>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @db.db_instance_identifier %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:rds_db_instance, @db.db_instance_identifier, @db.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @db } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Deletion Protection</h5>
+      </div>
+      <h5>
+        <% if @db.deletion_protection %>
+          <p class="badge badge-success mb-0"><%= "enabled" %></p>
+        <% else %>
+          <span class="badge badge-danger mb-0"><%= "disabled" %></span>
+          <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html#USER_DeleteInstance.DeletionProtection" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="Prevent accidental deletion of DBs by enabling deletion protection."></i></a>
+        <% end %>
+      </h5>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Storage Type</h5>
+      </div>
+      <h5>
+        <% if @db.storage_type == "standard" %>
+          <span class="badge badge-warning mb-0"><%= "standard" %></span>
+          <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html#CHAP_Storage.Magnetic" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="Standard storage is not recommended."></i></a>
+        <% else %>
+          <p class="badge badge-success mb-0"><%= @db.storage_type %></p>
+        <% end %>
+      </h5>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Engine Version</h5>
+      </div>
+      <p class="mb-0"><%= @db.engine_version %></p>
+    </div>
+    <%= render_annotation_for(@db) %>
+  </div>
+</div>

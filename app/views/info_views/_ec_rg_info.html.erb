@@ -1,0 +1,105 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @rg.replication_group_id %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:elasticache_rg, @rg.replication_group_id, @rg.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @rg } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+
+    <% if controller.controller_name == 'resiliency_view' %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <% if %w(creating available).include? @rg.status %>
+          <h5><span class="badge-lg badge badge-success"><%= @rg.status %></span></h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-danger"><%= @rg.status %></span></h5>
+        <% end %>
+      </div>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Automatic Failover</h5>
+        </div>
+        <h5><span class="badge-lg badge badge-<%= @rg.automatic_failover == 'enabled' ? 'success' : 'danger' %>"><%= @rg.automatic_failover %></span></h5>
+      </div>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Multi AZ</h5>
+        </div>
+        <h5><span class="badge-lg badge badge-<%= @rg.multi_az == 'enabled' ? 'success' : 'danger' %>"><%= @rg.multi_az %></span></h5>
+      </div>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Backups</h5>
+        </div>
+        <h5><span class="badge-lg badge badge-<%= @rg.snapshot_retention_limit == 0 ? 'danger' : 'success' %>">
+          <%= @rg.snapshot_retention_limit == 0 ? 'disabled' : 'enabled' %>
+        </span></h5>
+      </div>
+    <% end %>
+
+    <% if ['infrastructure_view', 'network_view'].include? controller.controller_name %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <p class="mb-0"><%= @rg.status %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Shard Count</h5>
+        </div>
+        <p class="mb-0"><%= @rg.try(:aws_elasticache_rg_node_groups).try(:count) %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Primary Endpoint</h5>
+        </div>
+        <% if @rg.cluster_enabled %>
+          <p class="mb-0"><%= "#{@rg.try(:configuration_endpoint_address)}:#{@rg.try(:configuration_endpoint_port)}" %></p>
+        <% else %>
+          <!-- Cluster Mode disabled RGs always has only one item in aws_elasticache_rg_node_groups -->
+          <% node_group = @rg.aws_elasticache_rg_node_groups.first %>
+          <p class="mb-0"><%= "#{node_group.try(:primary_endpoint_address) }:#{node_group.try(:primary_endpoint_port)}" %></p>
+        <% end %>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Node Type</h5>
+        </div>
+        <p class="mb-0"><%= @rg.cache_node_type %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Encryption</h5>
+        </div>
+        <% if @rg.transit_encryption_enabled %>
+          <div><span><i class="mr-2 text-success fas fa-check"></i>In Transit</span></div>
+        <% else %>
+          <div><span><i class="mr-2 text-danger fas fa-times"></i>In Transit</span></div>
+        <% end %>
+        <% if @rg.at_rest_encryption_enabled %>
+          <div><span><i class="mr-2 text-success fas fa-check"></i>At Rest</span></div>
+        <% else %>
+          <div><span><i class="mr-2 text-danger fas fa-times"></i>At Rest</span></div>
+        <% end %>
+      </div>
+    </div>
+    <%= render partial: "tag_list", locals: { tags: @rg.tags } %>
+  <% end %> <!-- end infrastructure_view -->
+  <%= render_annotation_for(@rg) %>
+
+  </div>
+</div>

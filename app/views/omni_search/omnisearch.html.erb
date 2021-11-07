@@ -1,0 +1,230 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="form-group mb-0">
+          <div class="d-flex justify-content-between mb-2 row">
+            <div class="col-lg-8">
+              <div class="row">
+                <div class="col-lg-12">
+                  <label class="mb-0" for="omnisearch">
+                    <span>Omnisearch - Type a query & hit Enter.</span>
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <small><span class="font-weight-bold">Note:</span> Searching for Tags with key:value syntax is not supported. You can still search for tags with free flow text.</small>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center col-lg-4">
+              <div class="flex-fill"></div>
+              <button data-toggle="modal" data-target="#queryExamplesModal" class="ml-2 btn-sm btn btn-info">Query Examples</button>
+              <a href="https://docs.quadzig.io/omnisearch.html" target="_blank" class="ml-2 btn-sm btn btn-info">Omnisearch Reference</a>
+            </div>
+          </div>
+          <%= form_with url: search_resources_path, method: :get, local: true, id: "omnisearchForm"  do |f| %>
+            <div class="row">
+              <div class="col-lg-10">
+                <%= f.text_field :search_string, required: :required, style:"color: black", class: "form-control", placeholder:"rt:ec2_instance AND private_ip_address:'10.1.61.65'", value: @search_string, autofocus: true, onfocus:"var temp_value=this.value; this.value=''; this.value=temp_value" %>
+              </div>
+              <div class="col-lg-2">
+                <button type="submit" class="btn-block btn btn-success">Search</button>
+              </div>
+            <% end %>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mt-1"><small id="searchQueryError" class="text-danger"></small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between row">
+          <div class="col-lg-9">
+            <h5 class="mb-0">Search Results</h5>
+            <% if @pagy_array %>
+              <small><span class="font-weight-bold">Total hits: </span><%= @pagy_array.count %></small>
+            <% else %>
+              <small><span class="font-weight-bold">Note:</span> Search results are paginated.</small>
+            <% end %>
+          </div>
+          <div class="col-lg-3">
+            <button id="syncResources" type="button" class="btn-block btn btn-success">Sync Resources</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="searchResults">
+          <% if @resources %>
+            <%= render partial: "search_results" %>
+          <% elsif @omnisearch_error %>
+            <div class="alert alert-danger" role="alert">
+              <p>We are sorry. Something went wrong during the search. Please try again later.</p>
+            </div>
+          <% else %>
+            <div class="alert alert-info" role="alert">
+              <h4 class="alert-heading">Enter a query</h4>
+              <p>Quadzig supports a simple <span class="font-weight-bold">key:value</span> pair syntax for querying your resources. You can provide multiple key:value pairs separated by a <span class="font-weight-bold">','</span> character. You can also perform <span class="font-weight-bold">full text search</span> across all your resources with free flow text. The <span class="font-weight-bold">'AND'</span> operator is used to combine multiple key:value pairs.</p>
+              <p>Please note that ',' and ':' are reserved keywords and cannot be escaped. For a full list of supported attributes, please <a target="_blank" href="https://docs.quadzig.io/omnisearch.html">refer to our documentation.</a></p>
+              <hr>
+              <h6><p class="mb-0">Example Queries</p></h6>
+<pre><code># Search for RDS instances that does not have multi-az enabled.
+<span class="font-weight-bold pb-2">rt:rds_instance, multi_az:false</span>
+<hr class="mb-0">
+# Search for EC2 Instances with a specific IP address.
+<span class="font-weight-bold">rt:ec2_instance, private_ip:address:10.1.58.240</span>
+<hr class="mb-0">
+# Search for EC2 Instances with a specific Tag.
+<span class="font-weight-bold">rt:ec2_instance, tags.key:environment, tags.value:production</span>
+<hr class="mb-0">
+# Full text search across all your resources
+<span class="font-weight-bold">quadzig-production-database db.t3.medium</span></code></pre>
+              <button data-toggle="modal" data-target="#queryExamplesModal" class="btn-block btn btn-info">More Query Examples</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="card-footer">
+        <% if @pagy_array %>
+          <div class="row align-items-center justify-content-center">
+            <%== pagy_bootstrap_nav(@pagy_array) %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div id="recentSearchesContainer" class="overflow-auto">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Searches</h5>
+          <small>Shows the most recent 20 queries</small>
+        </div>
+        <div class="p-0 card-body">
+          <ul id="recentSearchesList" class="overflow-auto list-group-flush list-group">
+            <% if @current_queries %>
+              <% @current_queries.each do |q| %>
+                <% id_string = "a#{SecureRandom.hex(5)}" %>
+                <li class="pt-2 pb-2 list-group-item">
+                  <div class="row">
+                    <div class="text-truncate col-lg-9">
+                      <span title="<%= q %>" id='<%= id_string %>' ><%= q %></span>
+                    </div>
+                    <div class="d-flex justify-content-end col-lg-3">
+                      <i type="button" data-toggle="tooltip" data-placement="top" title="Copy Query to Clipboard" data-clipboard-target='<%= "##{id_string}" %>'  class="add-tooltip copy-btn text-success fas fa-copy align-self-center"></i>
+                      <%= form_with url: search_resources_path, method: :get, local: true  do |f| %>
+                        <%= f.text_field :search_string, value: q, hidden: true, class: 'd-none' %>
+                        <button data-toggle="tooltip" data-placement="top" title="Search using this Query" class="add-tooltip ml-3 btn btn-sm btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            <% else %>
+              <div class="card-body">
+                <p>No recent Queries</p>
+              </div>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="queryExamplesModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-xl modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="row">
+          <div class="col-lg-12">
+            <h5 class="mb-0 modal-title">
+              Query Examples
+            </h5>
+            <small>If no AWS Account or Region is specified, resources are queried across all your AWS Accounts</small>
+          </div>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="queryExamplesModalBody" class="pt-0 overflow-auto modal-body">
+        <div class="no-gutters row">
+          <div class="col-lg-4">
+            <pre class="mb-0"><code>
+<small class="text-wrap">All resources with a specific tag.</small>
+<span class="text-wrap font-weight-bold">tags.key:environment, tags.value:production</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">RDS instances that does not have multi-az enabled.</small>
+<span class="text-wrap font-weight-bold">rt:rds_instance, multi_az:false</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">All Application Load Balancers</small>
+<span class="text-wrap font-weight-bold">rt:load_balancer, lb_type:application</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">VPC with a specific CIDR Range</small>
+<span class="text-wrap font-weight-bold">rt:vpc, cidr_block:10.0.0.0/16</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">EC2 Instances with a specific IP address.</small>
+<span class="text-wrap font-weight-bold">rt:ec2_instance, private_ip_address:10.2.83.141</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">All Subnets of a VPC</small>
+<span class="text-wrap font-weight-bold">rt:subnet, vpc_id:vpc-8ea7g3</span>
+            </code></pre>
+          </div>
+          <div class="col-lg-5">
+            <pre class="mb-0"><code>
+<small class="text-wrap">EC2 Instance with a specific Name Tag.</small>
+<span class="text-wrap font-weight-bold">rt:ec2_instance, tags.key:Name, tags.value:quadzig-production-instance</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">EC2 Instances of type t2.large with a specific IP address.</small>
+<span class="text-wrap font-weight-bold">rt:ec2_instance, private_ip_address:10.2.83.141, instance_size:t2.large</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">All EC2 Instances within a single AWS Account & Region</small>
+<span class="text-wrap font-weight-bold">rt:ec2_instance, region_code:us-east-1, account_id:285732482193</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">ECS Services belonging to a specific ECS Cluster</small>
+<span class="text-wrap font-weight-bold">rt:ecs_service, cluster_name:quadzig-production-cluster</span>
+            </code></pre>
+            <pre class="mb-0"><code>
+<small class="text-wrap">EC2 Instances with a specific Key Pair associated with it.</small>
+<span class="text-wrap font-weight-bold">rt:ec2_instance, key_pair:my_personal_kp</span>
+            </code></pre>
+          </div>
+          <div class="col-lg-3">
+            <h6 class="mt-3">Common Search Keywords</h6>
+            <p class="mb-0"><small>Resource Type</small></p>
+            <span class="text-wrap"><span class="font-weight-bold">rt</span>:ec2_instance</span>
+            <hr>
+            <p class="mb-0"><small>AWS Account</small></p>
+            <span class="text-wrap"><span class="font-weight-bold">aws_account_id</span>:572357235723</span>
+            <hr>
+            <p class="mb-0"><small>Region</small></p>
+            <span class="text-wrap"><span class="font-weight-bold">region_code</span>:us-west-1</span>
+            <hr>
+            <p class="mb-0"><small>Account Name</small></p>
+            <span class="text-wrap"><span class="font-weight-bold">aws_account_name</span>:quadzig-production</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_pack_tag 'omnisearch' %>

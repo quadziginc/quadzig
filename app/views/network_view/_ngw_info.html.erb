@@ -1,0 +1,57 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @ngw.ngw_id %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:ngw, @ngw.ngw_id, @ngw.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @ngw } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>VPC Id</h5>
+      </div>
+      <%= clickable_aws_console_link(:vpc, @ngw.vpc_id, @ngw.region_code) %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Subnet Id</h5>
+      </div>
+      <%= clickable_aws_console_link(:subnet, @ngw.subnet_id, @ngw.region_code) %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Region</h5>
+      </div>
+      <p class="mb-0"><%= @ngw.region_code %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Addresses</h5>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Public IP</th>
+            <th scope="col">Private IP</th>
+          </tr>
+        </thead>
+        <tbody>          
+          <% @ngw.addresses.each do |addr| %>
+            <tr>
+              <td><%= addr["public_ip"] %></td>
+              <td><%= addr["private_ip"] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <%= render_annotation_for(@ngw) %>
+  </div>
+</div>
+

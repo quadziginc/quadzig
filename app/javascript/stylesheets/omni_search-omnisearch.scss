@@ -1,0 +1,21 @@
+#omni_search-omnisearch {
+	.c-main {
+		padding-top: 5px;
+	}
+
+	#recentSearchesContainer {
+		height: 100%;
+	}
+
+	#recentSearchesList {
+		height: calc(65vh);
+	}
+
+	#omnisearch {
+		color: black;
+	}
+
+	#queryExamplesModalBody {
+		height: calc(70vh)
+	}
+}

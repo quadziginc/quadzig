@@ -1,0 +1,33 @@
+class AwsElasticacheClusterEntity < ResourceEntity
+  expose :cache_cluster_id, expose_nil: false
+  expose :configuration_endpoint_address, expose_nil: false
+  expose :configuration_endpoint_port, expose_nil: false
+  expose :client_download_landing_page, expose_nil: false
+  expose :cache_node_type, expose_nil: false
+  expose :engine, expose_nil: false
+  expose :engine_version, expose_nil: false
+  expose :cache_cluster_status, expose_nil: false
+  expose :num_cache_nodes, expose_nil: false
+  expose :preferred_availability_zone, expose_nil: false
+  expose :preferred_outpost_arn, expose_nil: false
+  expose :cache_cluster_create_time, expose_nil: false
+  expose :preferred_maintenance_window, expose_nil: false
+  expose :pending_modified_values, expose_nil: false
+  expose :notification_configuration, expose_nil: false
+  expose :cache_security_groups, expose_nil: false
+  expose :cache_parameter_group, expose_nil: false
+  expose :cache_subnet_group_name, expose_nil: false
+  expose :auto_minor_version_upgrade, expose_nil: false
+  expose :security_groups, expose_nil: false
+  expose :replication_group_id, expose_nil: false
+  expose :snapshot_retention_limit, expose_nil: false
+  expose :snapshot_window, expose_nil: false
+  expose :auth_token_enabled, expose_nil: false
+  expose :auth_token_last_modified_date, expose_nil: false
+  expose :transit_encryption_enabled, expose_nil: false
+  expose :at_rest_encryption_enabled, expose_nil: false
+  expose :arn, expose_nil: false
+  expose :replication_group_log_delivery_enabled, expose_nil: false
+  expose :log_delivery_configurations, expose_nil: false
+  expose :tags, expose_nil: false
+end

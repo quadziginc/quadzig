@@ -1,0 +1,12 @@
+<% if @accounts.empty? %>
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Welcome!</h4>
+    <p>It looks like you have not configured any AWS Accounts yet. Please add an AWS Account to start visualizing your infrastructure.</p>
+    <p class="font-weight-bold">If you have just added an AWS Account, your account should be available within a few minutes.</p>
+    <hr>
+    <%= link_to "Add AWS Account", add_aws_account_path, class: 'btn btn-primary' %>
+  </div>
+<% else %>
+  <%= render 'resiliency_view' %>
+  <%= javascript_pack_tag 'resiliency_view' %>
+<% end %>

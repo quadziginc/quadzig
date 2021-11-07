@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>My Resource Groups</h4>
+      </div>
+      <div class="card-body">
+        <% @resource_groups.each do |rg| %>
+          <%= form_with model: rg, method: :patch do |form| %>
+            <div class="form-group">
+              <%= label_tag :name, 'Resource Group Name' %> <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="A friendly name for your AWS Resource Group."></i>
+              <%= form.text_field :name, class: 'dark-black form-control' %>
+            </div>
+            <div class="form-group">
+              <%= label_tag :accounts, 'Configuration for Accounts' %>
+              <%= form.text_area :accounts, class: 'dark-black form-control' %>
+            </div>
+
+            <div class="form-check">
+              <%= form.check_box :default, class: 'dark-black form-check-input' %>
+              <%= label_tag :default, 'Default Resource Group', class: 'form-check-label' %>
+            </div>
+
+            <%= form.submit 'Save', class: 'mt-2 btn btn-primary'  %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

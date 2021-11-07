@@ -1,0 +1,87 @@
+<div class="card">
+  <div class="card-header">
+    <h4>Settings</h4>
+  </div>
+  <div class="border-0 card-body">
+    <% if @mfa_device %>
+      <div class="list-group">
+        <li class="list-group-item">
+          <h5>MFA Device</h5>
+          <p></i><%= @mfa_device.device_name %><i data-toggle="modal" data-target="#deleteMfaDeviceModal" id="deleteMfaDevice" class="text-danger ml-2 fas fa-trash"></i></p>
+        </li>
+      </div>
+    <% else %>
+      <div class="row">
+        <div class="col-lg-12">
+          <h6 class="mb-1">Multi Factor Authentication</h6>
+          <p class="mb-1 d-block text-primary">Note: MFA is only available for users who signed up with Email & Password. Users signing up with Google cannot avail MFA functionality.</p>
+          <button class="btn btn-primary" data-toggle="collapse" data-target="#mfaCollapsible" aria-expanded="false" aria-controls="mfaCollapsible">Activate MFA</button>
+        </div>
+      </div>
+      <div class="collapse mt-3" id="mfaCollapsible">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mb-0 card card-body">
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="font-weight-bold" for="mfaQrCodeContainer">QR Code</label>
+                  <div id="mfaQrCodeContainer" style="height:200px; width: 200px;" class="d-flex justify-content-center m-0 p-0 card card-body">
+                    <a id="activateMfa" class="text-center" href="#">Show QR Code</a>
+                  </div>
+                  <small class="text-primary">Note: If you are unable to load the QR Code image, you may have to log out and login to activate MFA.</small>
+                </div>
+                <div class="col-lg-6">
+                  <%= form_with url: configure_mfa_path, method: :post, local: true  do |f| %>
+                    <div class="form-group">
+                      <label class="font-weight-bold">MFA Code</label>
+                      <%= f.text_field :mfa_code, required: :required, style:"color: black", class: "form-control", placeholder:"634721", maxlength: 6 %>
+                    </div>
+                    <div class="form-group">
+                      <label class="font-weight-bold">Device Name</label>
+                      <%= f.text_field :mfa_device_name, required: :required, style:"color: black", class: "form-control", placeholder:"Work Iphone", maxlength: 128 %>
+                    </div>
+                    <%= f.submit "Configure MFA", class: "w-100 mt-2 btn btn-primary" %>
+                    <p><small>Scan the QR Code in your Authenticator App & enter the resulting MFA code here. You can give your device a friendly name for reference.</small></p>
+                  <% end %>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <p class="mt-2 mb-0">You can also enter the secret code directly. <a data-toggle="collapse" data-target="#secretCodeCollapsible" aria-expanded="false" aria-controls="secretCodeCollapsible" href="#" id="showSecretCode">Show Secret Code</a></p>
+                  <div class="collapse" id="secretCodeCollapsible">
+                    <pre class="mt-2 mb-0"><code><span id="mfaSecretCodeContainer"></span></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% if @mfa_device %>
+  <div class="modal fade" id="deleteMfaDeviceModal" tabindex="-1" role="dialog" aria-labelledby="deleteMfaDeviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="deleteMfaDeviceModalLabel">Delete MFA Device?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Delete MFA Device <span class="font-weight-bold"><%= @mfa_device.device_name %></span>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <%= form_with url: delete_mfa_device_path, method: :delete, local: true do |f| %>
+            <%= f.submit "Delete MFA Device", class: "btn btn-danger" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= javascript_pack_tag 'mfa' %>

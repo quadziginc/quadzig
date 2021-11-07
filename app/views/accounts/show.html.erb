@@ -1,0 +1,55 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>Edit AWS Account</h4>
+      </div>
+      <div class="card-body">
+        <%= form_with url: update_aws_account_path, method: :put, model: @account, local: true  do |f| %>
+          <div class="form-group">
+            <%= label_tag :name, "Account Name" %> <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="A friendly name for your AWS Account."></i>
+            <%= f.text_field :name, class: "dark-black form-control", "data-bind" => "text: accountName", placeholder: "Web Production Account" %>
+          </div>
+          <div class="form-group">
+            <%= label_tag :iam_role_arn, "IAM Role ARN" %>
+            <%= f.text_field :iam_role_arn, readonly: true, class: "dark-black form-control", placeholder: "arn:aws:iam::111111111111:role" %>
+          </div>
+          <div class="form-group">
+            <%= label_tag :external_id, "External ID" %>
+            <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="External ID is used by Quadzig while discovering your AWS Resources. It provides an additional layer of security during cross Account IAM Role based access. Visit Quadzig docs to find out more."></i>
+            <%= f.text_field :external_id, class: "form-control", readonly: true %>
+          </div>
+          <div class="form-group">
+            <%= label_tag :cf_stack_name, "Cloudformation Stack Name" %>
+            <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="The name of the Cloudformation Stack that is used to provision the cross Account IAM Role. This role is used by Quadzig to discover your AWS Resources."></i>
+            <%= f.text_field :cf_stack_name, class: "form-control", readonly: true %>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <%= label_tag :active_regions, "Active Regions" %>
+              <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="List of AWS Regions where you would like Quadzig to discover resources. You have to select at least one AWS Region to add an AWS Account. If you don't select any regions, Quadzig will by default discover resources in the N Virginia(us-east-1) region."></i>
+              <div class="mb-2 form-check">
+                <input class="form-check-input" type="checkbox" value="" id="selectAllRegions">
+                <label class="form-check-label" for="selectAllRegions">
+                  <span class="font-weight-bold">Select All</span>
+                </label>
+              </div>
+              <div class="row">
+                <%= f.collection_check_boxes(:active_regions, AwsRegion.all.sort_by { |r| r.region_code }, :region_code, :full_name, include_hidden: false) do |b| %>
+                  <span class="col-4">
+                    <%= b.check_box class: 'regionCheckbox' %>
+                    <span class="mr-2 mb-2"><%= "#{b.object.full_name} (#{b.object.region_code})" %></span>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <!-- TODO: Get this implementation checked -->
+          <%= hidden_field(:aws_account, :ext_reference, value: @account.ext_reference) %>
+          <%= f.submit "Save", class: 'mt-2 btn btn-primary' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_pack_tag 'show_account' %>

@@ -1,0 +1,184 @@
+<span class="position-fixed invisible" id="templateUrlHolder"><%= @cf_link %></span>
+<span class="position-fixed invisible" id="stackNameHolder"><%= @cf_stack_name %></span>
+<span class="position-fixed invisible" id="quadzigAccountIdHolder"><%= @quadzig_account_id %></span>
+<span class="position-fixed invisible" id="externalIdHolder"><%= @external_id %></span>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="add-single-account-tab" data-toggle="tab" href="#add-single-account" role="tab" aria-controls="add-single-account" aria-selected="true">Add a Single AWS Account</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="add-multiple-aws-accounts-tab" data-toggle="tab" href="#add-multiple-aws-accounts" role="tab" aria-controls="add-multiple-aws-accounts" aria-selected="false">Add Multiple AWS Accounts with Cloudformation Stacksets</a>
+          </li>
+        </ul>
+        <div class="border p-3 tab-content">
+          <div class="tab-pane active" id="add-single-account" role="tabpanel" aria-labelledby="add-single-account-tab">
+            <div class="row no-gutters">
+              <div class="col-lg-3">
+                <div class="align-items-center justify-content-center d-flex">
+                  <div style="width: 60px; height: 60px;" class="align-items-center justify-content-center d-flex rounded-circle"><i class="fas fa-hand-pointer fa-2x"></i></div>
+                </div>
+                <div>
+                  <p class="text-center font-weight-bold">Step 1</p>
+                </div>
+                <div>
+                  <h5 class="text-center">Click 'Create IAM Role'</h5>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="align-items-center justify-content-center d-flex">
+                  <div style="width: 60px; height: 60px;" class="align-items-center justify-content-center d-flex rounded-circle"><i class="fas fa-paper-plane fa-2x"></i></div>
+                </div>
+                <div>
+                  <p class="text-center font-weight-bold">Step 2</p>
+                </div>
+                <div>
+                  <h5 class="text-center">Launch Cloudformation Template</h5>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="align-items-center justify-content-center d-flex">
+                  <div style="width: 60px; height: 60px;" class="align-items-center justify-content-center d-flex rounded-circle"><i class="fas fa-mug-hot fa-2x"></i></i></div>
+                </div>
+                <div>
+                  <p class="text-center font-weight-bold">Step 3</p>
+                </div>
+                <div>
+                  <h5 class="text-center">Grab a Coffee</h5>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="align-items-center justify-content-center d-flex">
+                  <div style="width: 60px; height: 60px;" class="align-items-center justify-content-center d-flex rounded-circle"><i class="fas fa-flag-checkered fa-2x"></i></div>
+                </div>
+                <div>
+                  <p class="text-center font-weight-bold">Step 4</p>
+                </div>
+                <div class="text-center">
+                  <h5>Voilà! Account Created!</h5>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-12">
+                <p><span>Quadzig needs a <span class="font-weight-bold">Read Only IAM Role</span> with limited permissions provisioned in your AWS Account to discover resources. You can create a Cross Account IAM Role by clicking 'Create IAM Role' button below (You need to be logged into your AWS Account). This will launch a Cloudformation stack to provision the role.</span></p>
+                <p>Once the Cloudformation stack is complete, your account will be available in the <a href="/accounts">Accounts</a> section within a few minutes.</p>
+              </div> 
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <!-- The param_external_id should ALWAYS be at the end of the url. This is because in new_account.js  -->
+                  <!-- we dynamically replace the external id periodically to make sure that external_ids are unique across -->
+                  <!-- accounts. Refer to new_account.js for more information -->
+                  <div class="row">
+                    <div class="col-lg-3">
+                      <div id="regionSelectionDropdownParent" class="dropdown">
+                        <button class=".text-truncate w-100 btn btn-primary dropdown-toggle" type="button" id="regionSelectionDropdownButton" data-toggle="dropdown" aria-expanded="false">
+                          <%= "us-east-1 (N. Virginia)" %>
+                        </button>
+                        <div class="dropdown-menu-right dropdown-menu" aria-labelledby="regionSelectionDropdownButton">
+                          <% @regions.each do |region| %>
+                            <a data-regionCode="<%= region.region_code %>" class="dropdown-item"><%= "#{region.region_code} (#{region.full_name})" %></a>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-9">
+                      <%= link_to "https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=#{@cf_link}&stackName=#{@cf_stack_name}&param_QuadzigAccountId=#{@quadzig_account_id}&param_ExternalId=#{@external_id}", class: 'w-100 btn btn-primary', id: 'cfStackUrl', target: '_blank' do %>
+                      Create <span class="font-weight">Read Only</span> IAM Role in <span id="stackCreationRegion">us-east-1</span> Region through Cloudformation
+                        <i class="cil-external-link"></i>
+                      <% end %>
+                    </div>
+                  </div>
+                  <%= hidden_field(:aws_account, :external_id, value: @external_id) %>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <span>Don't have access to create a Cloudformation Stack? Copy & share the link with your team mate.</span>
+                <button data-clipboard-target="#cfStackUrl" class="copy-btn btn btn-secondary btn-sm"><i class="mr-2 fas fa-copy"></i>Copy Link</button>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-lg-12">
+                <%= link_to 'Click here after launching Cloudformation Stack', aws_accounts_path(from_account_creation: true), class: 'btn btn-success w-100' %> 
+              </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="add-multiple-aws-accounts" role="tabpanel" aria-labelledby="add-multiple-aws-accounts-tab">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Cloudformation Stackset Parameters</h4>
+                </div>
+                <div class="card-body">
+                  <p>If your Organization uses <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html" target="_blank">Cloudformation Stacksets</a>, you can add multiple AWS Accounts to Quadzig by deploying a Cloudformation Stackset in the <span class="font-weight-bold">Administrator Account</span>.</p>
+                  <p>Please use the values specified below to set up a new stackset in the Administrator Account.</p>
+                  <div class="form-group">
+                    <label for="externalId">Amazon S3 URL of Cloudformation Template</label>
+                    <div class="row">
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" id="s3TemplateLink" readonly value="<%= @cf_link %>">
+                      </div>
+                      <div class="col-lg-2">
+                        <button data-clipboard-target="#s3TemplateLink" class="h-100 w-100 copy-btn btn btn-success btn-sm"><i class="mr-2 fas fa-copy"></i>Copy</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="externalId">External ID</label>
+                    <div class="row">
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" id="externalId" readonly value="<%= @external_id %>">
+                      </div>
+                      <div class="col-lg-2">
+                        <button data-clipboard-target="#externalId" class="h-100 w-100 copy-btn btn btn-success btn-sm"><i class="mr-2 fas fa-copy"></i>Copy</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="externalId">Quadzig Account ID</label>
+                    <div class="row">
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" id="quadzigAccountId" readonly value="<%= @quadzig_account_id %>">
+                      </div>
+                      <div class="col-lg-2">
+                        <button data-clipboard-target="#quadzigAccountId" class="h-100 w-100 copy-btn btn btn-success btn-sm"><i class="mr-2 fas fa-copy"></i>Copy</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div id="regionSelectionDropdownParentStackset" class="mt-3 dropdown">
+                        <button class=".text-truncate w-100 btn btn-primary dropdown-toggle" type="button" id="regionSelectionDropdownButtonStackSet" data-toggle="dropdown" aria-expanded="false">
+                          <%= "us-east-1 (N. Virginia)" %>
+                        </button>
+                        <div class="dropdown-menu-right dropdown-menu" aria-labelledby="regionSelectionDropdownButtonStackSet">
+                          <% @regions.each do |region| %>
+                            <a data-regionCode="<%= region.region_code %>" class="dropdown-item"><%= "#{region.region_code} (#{region.full_name})" %></a>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-8">
+                      <a target="_blank" href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacksets/create" id="cfStackUrlStackSet" class="w-100 mt-3 btn btn-primary">Create Cloudformation StackSet in <span id="stackCreationRegionStackSet">us-east-1 (N Virginia)</span></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_pack_tag 'new_account' %>

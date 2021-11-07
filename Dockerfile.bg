@@ -1,0 +1,13 @@
+FROM public.ecr.aws/f1h7x2r4/ruby-with-rails:v1
+
+WORKDIR /app
+COPY . .
+ENV BUNDLER_WITHOUT="development test"
+
+RUN apk update
+RUN apk add git
+
+RUN gem install bundler
+RUN bundle install -V
+
+CMD ["bundle", "exec", "sidekiq"]

@@ -1,0 +1,47 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @ec2.instance_id %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:ec2_instance, @ec2.instance_id, @ec2.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @ec2 } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>EC2 Instance Id</h5>
+      </div>
+      <p class="mb-0"><%= @ec2.instance_id %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Root Device Type</h5>
+      </div>
+      <h5>
+        <% if @ec2.root_device_type == "instance-store" %>
+          <span class="badge badge-warning mb-0"><%= @ec2.root_device_type %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="Any data stored on instance store backed EC2 instances will be lost on reboot."></i>
+        <% else %>
+          <span class="badge badge-success mb-0"><%= @ec2.root_device_type %></span>
+        <% end %>
+      </h5>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Virtualization Type</h5>
+      </div>
+      <h5>
+        <% if @ec2.virtualization_type == "hvm" %>
+          <span class="badge badge-success mb-0"><%= @ec2.virtualization_type %></span>
+        <% else %>
+          <span class="badge badge-danger mb-0"><%= @ec2.virtualization_type %></span><i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="AWS no longer recommends using instances of para virtualization type."></i>
+        <% end %>
+      </h5>
+    </div>
+    <%= render_annotation_for(@ec2) %>
+  </div>
+</div>

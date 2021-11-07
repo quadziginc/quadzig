@@ -1,0 +1,160 @@
+<% if @resources.count > 0 %>
+  <!-- <div class="accordion" id="searchResultsAccordian"> -->
+    <% @resources.each do |resource| %>
+      <% if resource.class == AwsTgwAttachment %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.tgw_attch_id,
+          image_path: 'media/images/aws_icons/general.png',
+          entity: AwsTgwAttachmentEntity,
+          console_link: aws_console_link(:tgw_attach, resource.tgw_attch_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsEcsCluster %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.cluster_name,
+          image_path: 'media/images/aws_icons/ecs_service.png',
+          entity: AwsEcsClusterEntity,
+          console_link: aws_console_link(:ecs_cluster, resource.cluster_name, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsVpc %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.vpc_id,
+          image_path: 'media/images/aws_icons/vpc.png',
+          entity: AwsVpcEntity,
+          console_link: aws_console_link(:vpc, resource.vpc_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsTgw %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.tgw_id,
+          image_path: 'media/images/aws_icons/tgw.png',
+          entity: AwsTgwEntity,
+          console_link: aws_console_link(:tgw, resource.tgw_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsSubnet %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.subnet_id,
+          image_path: 'media/images/aws_icons/public_subnet.png',
+          entity: AwsSubnetEntity,
+          console_link: aws_console_link(:subnet, resource.subnet_id, resource.aws_vpc.region_code) }
+        %>
+      <% elsif resource.class == AwsNgw %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.ngw_id,
+          image_path: 'media/images/aws_icons/nat_gw.png',
+          entity: AwsNgwEntity,
+          console_link: aws_console_link(:ngw, resource.ngw_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsLoadBalancer %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.load_balancer_name,
+          image_path: 'media/images/aws_icons/alb.png',
+          entity: AwsLoadBalancerEntity,
+          console_link: aws_console_link(:load_balancer, resource.load_balancer_arn, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsIgw %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.igw_id,
+          image_path: 'media/images/aws_icons/igw.png',
+          entity: AwsIgwEntity,
+          console_link: aws_console_link(:igw, resource.igw_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsEcsService %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.service_name,
+          image_path: 'media/images/aws_icons/ecs_service_service.png',
+          entity: AwsEcsServiceEntity,
+          console_link: ecs_service_console_link(resource) }
+        %>
+      <% elsif resource.class == AwsEc2Instance %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.instance_id,
+          image_path: 'media/images/aws_icons/ec2_inst_general.png',
+          entity: AwsEc2InstanceEntity,
+          console_link: aws_console_link(:ec2_instance, resource.instance_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsRdsDbInstance %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.db_instance_identifier,
+          image_path: 'media/images/aws_icons/rds_general.png',
+          entity: AwsRdsDbInstanceEntity,
+          console_link: aws_console_link(:rds_db_instance, resource.db_instance_identifier, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsRdsAuroraCluster %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.db_cluster_identifier,
+          image_path: 'media/images/aws_icons/rds_aurora_general.png',
+          entity: AwsRdsAuroraClusterEntity,
+          console_link: aws_console_link(:rds_aurora_cluster, resource.db_cluster_identifier, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsPeeringConnection %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.peering_id,
+          image_path: 'media/images/aws_icons/peering_conn.png',
+          entity: AwsPeeringConnectionEntity,
+          console_link: aws_console_link(:peering_conn, resource.peering_id, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsRdsAuroraDbInstance %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.db_instance_identifier,
+          image_path: 'media/images/aws_icons/rds_aurora_general.png',
+          entity: AwsRdsAuroraDbInstanceEntity,
+          console_link: aws_console_link(:rds_aurora_db_instance, resource.db_instance_identifier, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsEc2Asg %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.auto_scaling_group_name,
+          image_path: 'media/images/aws_icons/asg.png',
+          entity: AwsEc2AsgEntity,
+          console_link: aws_console_link(:ec2_asg, resource.auto_scaling_group_name, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsElb %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.load_balancer_name,
+          image_path: 'media/images/aws_icons/elb.png',
+          entity: AwsElbEntity,
+          console_link: aws_console_link(:elb, resource.load_balancer_name, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsEksCluster %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.name,
+          image_path: 'media/images/aws_icons/eks_service.png',
+          entity: AwsEksClusterEntity,
+          console_link: aws_console_link(:eks_cluster, resource.name, resource.region_code) }
+        %>
+      <% elsif resource.class == AwsEksNodegroup %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.nodegroup_name,
+          image_path: 'media/images/aws_icons/ec2_generic_group.png',
+          entity: AwsEksNodegroupEntity,
+          console_link: eks_nodegroup_link(resource) }
+        %>
+      <% elsif resource.class == AwsElasticacheCluster %>
+        <%= render partial: "omnisearch_result_card", locals: {
+          resource: resource,
+          resource_id: resource.cache_cluster_id,
+          image_path: resource.engine == "redis" ? 'media/images/aws_icons/elasticache_redis.png' : 'media/images/aws_icons/elasticache_mem.png',
+          entity: AwsElasticacheClusterEntity,
+          console_link: elasticache_cluster_console_link(resource) }
+        %>
+      <% end %>
+    <% end %>
+<% else %>
+  <p>No results found</p>
+<% end %>

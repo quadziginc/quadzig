@@ -1,0 +1,103 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Update IAM Role for <%= @account.name %></h5>
+    <div class="row">
+      <div class="col-lg-3">
+        <span class="text-truncate"><span class="font-weight-bold">Account Name: </span><%= @account.name %></span>
+      </div>
+      <div class="col-lg-3">
+        <span><span class="font-weight-bold">Account ID: </span><%= @account.account_id %></span>
+      </div>
+      <div class="col-lg-3">
+        <span class="text-truncate"><span class="font-weight-bold">Stack Name: </span><%= @account.cf_stack_name %></span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h5>How did you provision the IAM Role for this Account?</h5>
+    <div class="accordion" id="cfStackUpdateAccordian">
+      <div class="border card">
+        <div class="card-header" id="headingOne">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            I provisioned the IAM Role for this AWS Account using Cloudformation <span class="font-weight-bold">Stack</span>
+          </button>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#cfStackUpdateAccordian">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <p>If you provisioned the IAM Role through a Cloudformation Stack, you have to update the cloudformation Stack with the new Cloudformation template that contains additional permissions. Click the link below to open the Cloudformation Console and perform the following steps.</p>
+                <ul>
+                  <li>Select <span class="font-weight-bold"><%= @account.cf_stack_name %></span> from the list of Cloudformation stacks</li>
+                  <li>Click <span class="font-weight-bold">Update</span> button</li>
+                  <li>Select <span class="font-weight-bold">Replace current template</span> option</li>
+                  <li>
+                    <p>Enter the following S3 URL in the <span class="font-weight-bold">Amazon S3 URL</span> input</p>
+                    <div class="row">
+                      <div class="col-lg-9">
+                        <code><span id="newCfS3Url"><%= @latest_cf_version.cf_link %></span></code>
+                      </div>
+                      <div class="col-lg-3">
+                        <button data-clipboard-target="#newCfS3Url" class="ml-2 copy-btn btn btn-success btn-sm"><i class="mr-2 fas fa-copy"></i>Copy</button>
+                      </div>
+                      </div>
+                    </pre>
+                  </li>
+                </ul>
+                <p><span class="font-weight-bold">Note:</span> If you can't find your Cloudformation Stack through the below link, you most likely deployed the Cloudformation Stack in a different region.</p>
+                <a href="<%= cf_template_console_url(@account) %>" target="blank" class="w-100 btn btn-primary">Update IAM Role through Cloudformation Stack</a>
+                <span>If you are unable to update the IAM Role, please get in touch with <a href="mailto:support@quadzig.io">support@quadzig.io</a></span>
+              </div>
+              <div class="col-lg-6">
+                <h6>Watch a quick video on how to update the Cloudformation Stack</h6>
+                <video controls class="w-100" loop preload="auto" src="https://quadzig-assets-prd.s3-us-west-1.amazonaws.com/video/cf_stack.mp4"></video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border card">
+        <div class="card-header" id="headingTwo">
+          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            I provisioned the IAM Role for this AWS Account using Cloudformation <span class="font-weight-bold">StackSet</span>
+          </button>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#cfStackUpdateAccordian">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <p>If you provisioned the IAM Role through a Cloudformation Stackset, you have to update the cloudformation Stackset with the new Cloudformation template that contains additional permissions. Click the link below to open the Cloudformation Console and perform the following steps.</p>
+                <ul>
+                  <li>Select the correct Stackset used to deploy the IAM Role from the Stackset List</li>
+                  <li>In the <span class="font-weight-bold">Actions</span> menu on the top right, select <span class="font-weight-bold">Edit Stackset details</span></li>
+                  <li>Select <span class="font-weight-bold">Replace current template</span> option</li>
+                  <li>
+                    <p>Enter the following S3 URL in the <span class="font-weight-bold">Amazon S3 URL</span> input</p>
+                    <div class="row">
+                      <div class="col-lg-9">
+                        <code><span id="newCfStacksetS3Url"><%= @latest_cf_version.cf_link %></span></code>
+                      </div>
+                      <div class="col-lg-3">
+                        <button data-clipboard-target="#newCfStacksetS3Url" class="ml-2 copy-btn btn btn-success btn-sm"><i class="mr-2 fas fa-copy"></i>Copy</button>
+                      </div>
+                      </div>
+                    </pre>
+                  </li>
+                </ul>
+                <p><span class="font-weight-bold">Note:</span> If you can't find your Cloudformation Stackset through the below link, you most likely deployed the Cloudformation Stackset in a different region.</p>
+                <a href="<%= cf_stackset_console_url(@account) %>" target="blank" class="w-100 btn btn-primary">Update IAM Role through Cloudformation Stackset</a>
+                <span>If you are unable to update the IAM Role, please get in touch with <a href="mailto:support@quadzig.io">support@quadzig.io</a></span>
+              </div>
+              <div class="col-lg-6">
+                <h6>Watch a quick video on how to update the Cloudformation Stackset</h6>
+                <video controls class="w-100" loop preload="auto" src="https://quadzig-assets-prd.s3-us-west-1.amazonaws.com/video/cf_stackset.mp4"></video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%= javascript_pack_tag "update_cf.js" %>

@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4>Block Resources</h4>
+          </div>
+          <div class="card-body">
+            <% if !flash[:errors].nil? && flash[:errors].class == Hash %>
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">There was an error updating your settings.</h4>
+                <dl>
+                  <% flash[:errors].each do |field, errors| %>
+                    <dt><%= field.gsub("_", " ").camelize %></dt>
+                    <dd><%= errors[0] %></dd>
+                  <% end %>
+                </dl>
+              </div>
+            <% end %>
+            <%= form_with model: @current_user, url: update_ignore_lists_path, method: :patch, local: true do |f| %>
+              <div class="form-group">
+                <%= label_tag :ignored_aws_vpcs, "Ignored VPCs" %>
+                <%= f.text_area :ignored_aws_vpcs, class: "form-control", placeholder: 'vpc-03ef3e55958c664f5,vpc-0f9b476fda5c861c4', value: @current_user.ignored_aws_vpcs.count > 0 ? @current_user.ignored_aws_vpcs.join(",") : "" %>
+              </div>
+
+              <div class="form-check">
+                <%= f.check_box :ignore_default_vpcs, class: "form-check-input" %>
+                <label class="form-check-label">
+                  Ignore Default VPCs
+                </label>
+              </div>
+
+              <%= f.submit "Save", class: 'mt-2 btn btn-primary' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">Block Resources</h4>
+      <p>You can instruct Quadzig to not discover & visualize specific resources by adding their AWS IDs here. Currently, we support blocking VPCs. In addition, you also have the option to hide specific resources in the Visualization dashboard.</p>
+      <hr>
+      <%= link_to 'https://docs.quadzig.io/#blocklists', class: 'btn btn-primary', target: '_blank' do %>Visit Docs <i class="fa fa-external-link-alt"></i><% end %>
+    </div>
+  </div>
+</div>

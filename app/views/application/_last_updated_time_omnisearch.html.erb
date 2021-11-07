@@ -1,0 +1,9 @@
+<div class="d-flex mt-1">
+  <% if resource.last_updated_at.nil? %>
+    <h6 class="mb-0 pb-0"><span class="ml-2 badge-warning badge">Unknown</span></h6>
+  <% elsif (DateTime.now.utc - resource.last_updated_at)/60 > 10 %>
+    <h6 class="mb-0 pb-0"><span class="ml-2 badge-danger badge"><%= time_ago_in_words(resource.last_updated_at) %> ago</span></h6>
+  <% else %>
+    <h6 class="mb-0 pb-0"><span class="ml-2 badge-success badge"><%= time_ago_in_words(resource.last_updated_at) %> ago</span></h6>
+  <% end %>
+</div>

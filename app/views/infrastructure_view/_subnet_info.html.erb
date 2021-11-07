@@ -1,0 +1,52 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @subnet.subnet_id %></div>
+        <% if @subnet.default_for_az %>
+          <span class="badge badge-primary">Default</span>
+        <% end %>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:subnet, @subnet.subnet_id, @subnet.aws_vpc.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @subnet } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Connectivity Type</h5>
+      </div>
+      <% badge_color = @subnet.connectivity_type == "public" ? "success" : "primary" %>
+      <h5><span class="badge-lg badge badge-<%= badge_color %>"><%= @subnet.connectivity_type %></span></h5>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Availability Zone</h5>
+      </div>
+      <p class="mb-0"><%= @subnet.availability_zone %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Available IP Count</h5>
+      </div>
+      <p class="mb-0"><%= @subnet.available_ip_address_count %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>CIDR Block</h5>
+      </div>
+      <p class="mb-0"><%= @subnet.cidr_block %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>VPC ID</h5>
+      </div>
+      <%= clickable_aws_console_link(:vpc, @subnet.aws_vpc.vpc_id, @subnet.aws_vpc.region_code) %>
+    </div>
+    <%= render_annotation_for(@subnet) %>
+  </div>
+</div>
+

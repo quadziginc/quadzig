@@ -1,0 +1,64 @@
+<div class="c-sidebar c-sidebar-dark c-sidebar-show">
+	<ul class="c-sidebar-nav">
+	  <li class="c-sidebar-nav-title">
+      <img style="width: 100px" src="/sidebar_logo.png"/>
+    </li>
+    <li class="c-sidebar-nav-item c-sidebar-nav-dropdown">
+      <a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
+        <i class="mt-1 mr-2 far fa-map"></i> Views
+      </a>
+      <ul class="c-sidebar-nav-dropdown-items">
+        <li class="c-sidebar-nav-item">
+          <a class="c-sidebar-nav-link" href="<%= infrastructure_view_path(resource_group: @current_user.default_rg) %>" target="_top">
+            <i class="mt-1 fas fa-cubes mr-2"></i> Infrastructure
+          </a>
+        </li>
+        <li class="c-sidebar-nav-item">
+          <a class="c-sidebar-nav-link" href="<%= network_view_path(resource_group: @current_user.default_rg) %>" target="_top">
+            <i class="mt-1 fas fa-project-diagram mr-2"></i> Network
+          </a>
+        </li>
+        <li class="c-sidebar-nav-item">
+          <a class="c-sidebar-nav-link" href="<%= resiliency_view_path(resource_group: @current_user.default_rg) %>" target="_top">
+            <i class="mt-1 fas fa-anchor mr-2"></i> Resiliency
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="c-sidebar-nav-item">
+      <a class="c-sidebar-nav-link" href="<%= omnisearch_path %>">
+        <i class="mt-1 fas fa-binoculars mr-2"></i> Omnisearch
+      </a>
+    </li>
+    <li class="c-sidebar-nav-item">
+      <a class="c-sidebar-nav-link" href="<%= aws_accounts_path %>">
+        <i class="mt-1 fas fa-cloud mr-2"></i> Accounts
+      </a>
+    </li>
+
+    <li class="c-sidebar-nav-item">
+      <a class="c-sidebar-nav-link" href="<%= settings_path %>">
+        <i class="mt-1 fas fa-ban mr-2"></i> Block Lists
+      </a>
+    </li>
+    <li class="c-sidebar-nav-item">
+      <a class="text-truncate c-sidebar-nav-link" href="/preferences">
+        <i class="mt-1 mr-2 far fa-credit-card"></i> Subscriptions & Settings
+      </a>
+    </li>
+    <li class="c-sidebar-nav-item">
+      <a class="text-truncate c-sidebar-nav-link" href="/notifications">
+        <i class="mt-1 mr-2 far fa-bell"></i> Notifications
+        <% if @outdated_cf_template %>
+          <span class="font-weight-bold p-2 badge bg-danger"><i class="fas fa-exclamation"></i></span>
+        <% end %>
+      </a>
+    </li>
+    <li class="flex-fill"></li>
+    <li class="c-sidebar-nav-item">
+      <a class="c-sidebar-nav-link c-sidebar-nav-link-danger" href="<%= signout_path %>">
+        <i class="fas mt-1 mr-2 fa-sign-out-alt"></i> Sign Out
+      </a>
+    </li>
+	</ul>
+</div>

@@ -1,0 +1,31 @@
+<% if resource.class == AwsEc2Instance %>
+  <% security_groups = resource.aws_ec2_security_groups %>
+<% elsif resource.class == AwsLoadBalancer %>
+  <% security_groups = resource.aws_lb_security_groups %>
+<% elsif resource.class == AwsElb %>
+  <% security_groups = resource.aws_elb_security_groups %>
+<% end %>
+<% unless security_groups.to_a.empty? %>
+  <div class="overflow-auto list-group-item">
+    <div class="d-flex w-100 justify-content-between">
+      <h5>Security Groups</h5>
+    </div>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Protocol</th>
+          <th scope="col">Port Range</th>
+          <th scope="col">Source</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% security_groups.each do |sg| %>
+          <%= render 'application/security_group_rules', sg: sg, permissions: sg.ip_permissions %>
+          <%= render 'application/security_group_rules', sg: sg, permissions: sg.ip_permissions_egress %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

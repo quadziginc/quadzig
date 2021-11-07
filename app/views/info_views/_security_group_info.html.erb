@@ -1,0 +1,79 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @sg.group_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:ec2_security_group, @sg.group_id, @sg.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @sg } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <% if controller.controller_name == 'infrastructure_view' %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>ID</h5>
+        </div>
+        <p class="mb-0"><%= clickable_aws_console_link(:ec2_security_group, @sg.group_id, @sg.region_code) %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Description</h5>
+        </div>
+        <p class="mb-0"><%= @sg.description %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>VPC ID</h5>
+        </div>
+        <p class="mb-0"><%= clickable_aws_console_link(:vpc, @sg.vpc_id, @sg.region_code) %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Inbound rules count</h5>
+        </div>
+        <p class="mb-0"><%= pluralize(@sg.ingress_count, 'Permission entry') %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Outbound rules count</h5>
+        </div>
+        <p class="mb-0"><%= pluralize(@sg.egress_count, 'Permission entry') %></p>
+      </div>
+      <%= render partial: 'vpc_security_groups', locals: { resource: @sg, security_groups: [@sg] } %>
+      <% if @sg.respond_to?(:tags) && @sg.tags.count > 0 %>
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5>Tags</h5>
+          </div>
+          <div class="overflow-auto">
+            <table class="table table-striped table-bordered">
+              <thead>
+              <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @sg.tags.each do |tag| %>
+                <tr>
+                  <td><%= tag['key'] %></td>
+                  <td><%= tag['value'] %></td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+      <%= render_annotation_for(@sg) %>
+    <% end %> <!-- end infrastructure_view -->
+  </div>
+</div>

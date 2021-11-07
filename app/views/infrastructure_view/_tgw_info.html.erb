@@ -1,0 +1,63 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @tgw.tgw_id %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:tgw, @tgw.tgw_id, @tgw.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @tgw } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>ASN</h5>
+      </div>
+      <%= @tgw.amz_side_asn %>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Auto Accept Shared Attachments</h5>
+      </div>
+      <p class="mb-0"><%= @tgw.auto_acc_shrd_attch %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Region</h5>
+      </div>
+      <p class="mb-0"><%= @tgw.region_code %></p>
+    </div>
+    <% if @tgw.tags %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Tags</h5>
+        </div>
+        <div class="overflow-auto">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @tgw.tags %>
+                <% @tgw.tags.each do |tag| %>
+                  <tr>
+                    <td><%= tag["key"] %></td>
+                    <td><%= tag["value"] %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+    <%= render_annotation_for(@tgw) %>
+  </div>
+</div>
+

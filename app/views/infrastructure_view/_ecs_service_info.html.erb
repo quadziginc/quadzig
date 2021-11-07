@@ -1,0 +1,78 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @service.service_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= ecs_service_console_link(@service) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @service } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Service ARN</h5>
+      </div>
+      <p class="mb-0"><%= @service.service_arn %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Cluster ARN</h5>
+      </div>
+      <p class="mb-0"><%= clickable_aws_console_link(:ecs_cluster, @service.cluster_arn, @service.region_code) %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Status</h5>
+      </div>
+      <p class="mb-0"><%= @service.status %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Scheduling Strategy</h5>
+      </div>
+      <p class="mb-0"><%= @service.scheduling_strategy %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Task Counts</h5>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <span class="font-weight-bold">Desired</span>
+        </div>
+        <div class="col-md-4">
+          <h5><span class="badge badge-success"><%= @service.desired_count %></span></h5>
+        </div>
+        <div class="col-md-8">
+          <span class="font-weight-bold">Running</span>
+        </div>
+        <div class="col-md-4">
+          <h5><span class="badge badge-success"><%= @service.running_count %></span></h5>
+        </div>
+        <div class="col-md-8">
+          <span class="font-weight-bold">Pending</span>
+        </div>
+        <div class="col-md-4">
+          <h5><span class="badge badge-success"><%= @service.pending_count %></span></h5>
+        </div>
+      </div>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Launch Type</h5>
+      </div>
+      <p class="mb-0"><%= @service.launch_type %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Task Definition</h5>
+      </div>
+      <p class="mb-0"><%= @service.task_definition %></p>
+    </div>
+    <%= render_annotation_for(@service) %>
+  </div>
+</div>

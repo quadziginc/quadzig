@@ -1,0 +1,29 @@
+<div class="list-group-item">
+  <div class="d-flex w-100 justify-content-between">
+    <h5>Tags</h5>
+  </div>
+
+  <% if tags.to_a.empty? %>
+    <span>Tags not available</span>
+  <% else %>
+    <div class="overflow-auto">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tags.each do |tag| %>
+            <tr>
+              <td><%= tag["key"] %></td>
+              <td><%= tag["value"] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+</div>

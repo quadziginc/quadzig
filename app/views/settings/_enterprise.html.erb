@@ -1,0 +1,103 @@
+<% if flash[:errors] %>
+  <% flash[:errors].each do |error| %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <span><%= error %></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
+<% end %>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h4>Your Subscription</h4>
+      </div>
+      <div class="card-body">
+        <div class="list-group">
+          <div class="list-group-item">
+            <h5>Email ID</h5>
+            <p><%= @current_user.email %></p>
+          </div>
+          <div class="list-group-item">
+            <h5>Tier</h5>
+            <h5><span class="badge badge-primary"><%= @subscription.tier.capitalize %></span></h5>
+          </div>
+          <div class="list-group-item">
+            <h5>Subscription</h5>
+            <p class="mb-0">You have subscribed to <span class="font-weight-bold mb-0"><%= @subscription.aws_account_quantity %> AWS Account(s)</span> at <span class="font-weight-bold">$<%= @subscription.aws_account_quantity.to_i * 10%>/Month</span></p>
+            <small>This lets you visualize up to <span class="font-weight-bold"><%= @subscription.aws_account_quantity.to_i + 3 %> AWS Accounts</span>(3 AWS Accounts are free as part of Free Tier).</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-primary" id="manageBilling">Manage Subscription</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <%= render 'mfa' %>
+  </div>
+</div>
+
+<div class="modal fade" id="cancelSubscription" tabindex="-1" role="dialog" aria-labelledby="cancelSubscriptionModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="cancelSubscriptionModal">We are sorry to see you go!</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you would like to cancel your subscription? Your subscription will be changed to Free Tier. You can continue using Quadzig with Free Tier even after cancelling your subscription.</p>
+        <p>You will no longer be able to visualize more than 3 AWS Accounts. You will be refunded a pro-rated amount from your subscription in 7 to 10 business days.</p>
+      </div>
+      <div class="modal-footer">
+        <%= link_to "Confirm Cancellation", cancel_subscription_path, method: :delete, class: 'btn btn-danger' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateSubscription" tabindex="-1" role="dialog" aria-labelledby="updateSubscriptionModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="updateSubscriptionModal">Change your Subscription?</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group row mb-1">
+            <label for="awsAccountsCount" class="col-sm-8 col-form-label">Number of AWS Accounts</label>
+            <div class="col-sm-4">
+              <input type="number" class="form-control" id="awsAccountsCount" value="<%= @subscription.aws_account_quantity %>" min="1" oninput="validity.valid||(value='');">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="currentSubscriptionAmount" class="col-sm-8 col-form-label">Current Subscription Price</label>
+            <div class="col-sm-4">
+              <input type="text" readonly class="form-control-plaintext" id="currentSubscriptionAmount" value="$ <%= @subscription.aws_account_quantity.to_i * 5 %>/Month">
+            </div>
+          </div>
+          <div class="form-group row mb-1">
+            <label for="subscriptionAmount" class="col-sm-8 col-form-label">New Subscription Price</label>
+            <div class="col-sm-4">
+              <input type="text" readonly class="font-weight-bold form-control-plaintext" id="subscriptionAmount" value="$ <%= @subscription.aws_account_quantity.to_i * 5 %>/Month">
+            </div>
+          </div>
+        </form>
+        <p>You can change your subscription any time you want. You will be billed on a pro rated basis.</p>
+      </div>
+      <div class="modal-footer">
+        <a id="changeSubscription" class="btn btn-primary" href="#">Change Subscription</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_pack_tag 'enterprise_prices' %>

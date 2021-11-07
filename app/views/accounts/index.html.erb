@@ -1,0 +1,137 @@
+<% if flash[:errors] %>
+  <% flash[:errors].each do |error| %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <span><%= error %></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
+<% end %>
+<% if flash[:info] %>
+  <% flash[:info].each do |info| %>
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+      <span class="font-weight-bold"><%= info %></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <% end %>
+<% end %>
+<% if @from_account_creation %>
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <span>Can't find an AWS Account? It usually takes a few minutes for Accounts to turn up here after account creation.</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% end %>
+<% if @subscription_limit_reached %>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <span>You have reached your Subscription Limit. Please upgrade your subscription to add more AWS Accounts. Visualization views will only show <%= @allowed_ent_aws_account_quantity %> AWS Accounts.</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% end %>
+<% if @accounts.empty? %>
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">Welcome!</h4>
+    <p>It looks like you have not configured any AWS Accounts yet. Please add an AWS Account to start visualizing your infrastructure.</p>
+    <p class="font-weight-bold">If you have just added an AWS Account, your account should be available within a few minutes.</p>
+    <hr>
+    <%= link_to "Add AWS Account", add_aws_account_path, class: 'btn btn-primary' %>
+  </div>
+<% else %>
+  <!-- Modal Start -->
+  <% @accounts.each do |account| %>
+    <div class="modal fade" id="deleteAccount<%= account.id %>" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="deleteAccountModel">Delete Account <%= account.name %>?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete Account <span class="font-weight-bold"><%= account.name %></span>? You will no longer be able to visualize resources from this AWS Account. You can always add the AWS Account later again if you change your mind.</p>
+            <p class="font-weight-bold">Deleting the AWS Account will not delete the Cloudformation Stack used to provision the Cross Account Role. Please delete the Cloudformation stack <span class="text-primary"><%= account.cf_stack_name %></span> to remove the provisioned cross account role.</p>
+          </div>
+          <div class="modal-footer">
+            <%= link_to "Delete", delete_aws_account_path(account), method: :delete, class: 'btn btn-danger' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+    <!-- Modal End -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="d-flex card-header">
+          <h4>Your AWS Accounts</h4>
+          <span class="flex-fill"></span>
+          <% if @subscription.tier.to_s == 'enterprise' %>
+            <% if @creation_completion_accounts.count > @allowed_ent_aws_account_quantity %>
+              <h6 class="text-danger align-self-center"><%= "Subscription Exceeded! #{@creation_completion_accounts.count} out of #{@allowed_ent_aws_account_quantity} AWS Accounts Used" %></h6>
+            <% else %>
+              <h6 class="align-self-center"><%= "Subscription: #{@creation_completion_accounts.count} out of #{@allowed_ent_aws_account_quantity} AWS Accounts Used" %></h6>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <table class="table table-striped table-hover table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Name<i class="ml-1 fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="We assign a friendly name to your AWS account during account creation. You can change the name from the 'View Account Screen'."></i></th>
+                <th scope="col">Account ID</th>
+                <th style="width: 40%" scope="col">State</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @accounts.each do |account| %>
+                <tr>
+                  <td>
+                    <%= account.name %>
+                  </td>
+                  <!-- TODO: Processing string should be in yellow. Created in green -->
+                  <td><%= account.account_id %></td>
+                  <td>
+                    <% if account.status.to_s == "created" %>
+                      Created
+                    <% elsif account.status.to_s == "processing" %>
+                      <span>Processing</span> <i class="fa fa-question-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="We are verifying that Quadzig has the correct IAM permissions to access your AWS account. If the status does not change to 'Created' within a few minutes of adding the AWS Account, please try deleting and re-adding the AWS Account. If this does not fix the issue, please get in touch with Quadzig Support."></i><a href="<%= request.path %>"><i class="ml-2 fas fa-redo-alt"></i></a>
+                    <% elsif account.status.to_s == "deleted" %>
+                      <span class="text-danger">Impaired! <i class="fas fa-exclamation-circle add-tooltip" data-toggle="tooltip" data-placement="top" title="The Cloudformation Stack associated with this AWS Account has been deleted! Please remove this AWS Account from Quadzig."></i></span>
+                    <% elsif account.status.to_s == "error" %>
+                      <p class="mb-0 text-danger">Error!</p>
+                      <p class="mb-0 text-danger"><%= account.creation_errors[0] %></p>
+                    <% end %>
+                  </td>
+                  <td class="d-flex">
+                    <% if !account.cf_template_version.is_latest %>
+                      <%= link_to update_account_cf_path(account), class: 'add-tooltip btn btn-warning', title:"Quadzig requires additional read permissions to support visualization of new AWS Resources.", data: { toggle: "tooltip", placement: "top" } do %>
+                        Update Required
+                        <i class="ml-2 fas fa-exclamation-triangle"></i>
+                      <% end %>
+                    <% end %>
+                    <div class="flex-fill"></div>
+                    <%= link_to "View/Edit", show_aws_account_path(account), class: 'ml-1 btn btn-primary' %>
+                    <%= link_to "Delete", '#', { class: 'ml-3 btn btn-danger', 'data-toggle' => "modal", 'data-target' => "#deleteAccount#{account.id}" } %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% if @subscription_limit_reached %>
+    <%= link_to "Add AWS Account", add_aws_account_path, class: 'disabled btn btn-primary' %>
+  <% else %>
+    <%= link_to "Add AWS Account", add_aws_account_path, class: 'btn btn-primary' %>
+  <% end %>
+<% end %>

@@ -1,0 +1,160 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @cluster.cache_cluster_id %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= elasticache_cluster_console_link(@cluster) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @cluster } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <% if controller.controller_name == 'resiliency_view' %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Version</h5>
+        </div>
+        <% if @cluster.engine == "redis" %>
+          <% if [
+            "5.0.0",
+            "5.0.3",
+            "5.0.4",
+            "5.0.5",
+            "2.6.13",
+            "2.8.6",
+            "2.8.19"
+          ].include? @cluster.engine_version %>
+            <h5>
+              <span class="badge-lg badge badge-danger">
+                <%= @cluster.engine_version %>
+              </span>
+            </h5>
+            <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/supported-engine-versions.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="This version of Redis is approaching end-of-life"></i></a>
+          <% else %>
+            <h5><span class="badge-lg badge badge-success">
+              <%= @cluster.engine_version %>
+            </span></h5>
+          <% end %>
+        <% elsif @cluster.engine == "memcached" %>
+          <% if ![
+            "1.6.6",
+            "1.5.16",
+            "1.5.10",
+            "1.4.34",
+            "1.4.33",
+            "1.4.24",
+            "1.4.14",
+            "1.4.5"
+          ].include? @cluster.engine_version %>
+            <h5><span class="badge-lg badge badge-danger">
+              <%= @cluster.engine_version %>
+            </span></h5>
+            <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/supported-engine-versions.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="This version of Memcached is approaching end-of-life"></i></a>
+          <% else %>
+            <h5>
+              <span class="badge badge-lg badge-success">
+                <%= @cluster.engine_version %>
+              </span>
+            </h5>
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if @cluster.engine == "redis" %>
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5>Backups</h5>
+          </div>
+          <% if @cluster.snapshot_retention_limit == 0 %>
+            <h5><span class="badge-lg badge badge-danger">
+              disabled
+            </span>
+            <a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups-automatic.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="Automatic backups disabled for this cluster"></i></a></h5>
+          <% else %>
+            <h5>
+            <span class="badge-lg badge badge-success">
+              enabled
+            </span></h5>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <% if %w(available creating).include? @cluster.cache_cluster_status %>
+          <h5><span class="badge-lg badge badge-success"><%= @cluster.cache_cluster_status %></span></h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-danger"><%= @cluster.cache_cluster_status %></span></h5>
+        <% end %>
+      </div>
+    <% end %>
+    <% if ['infrastructure_view', 'network_view'].include? controller.controller_name %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.cache_cluster_status %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Primary Endpoint</h5>
+        </div>
+        <p class="mb-0"><%= @primary_node_endpoint %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Node Type</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.cache_node_type %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Engine</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.engine %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Engine Version</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.engine_version %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Cache Node Count</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.num_cache_nodes %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Encryption</h5>
+        </div>
+        <% if @cluster.transit_encryption_enabled %>
+          <div><span><i class="mr-2 text-success fas fa-check"></i>In Transit</span></div>
+        <% else %>
+          <div><span><i class="mr-2 text-danger fas fa-times"></i>In Transit</span></div>
+        <% end %>
+        <% if @cluster.at_rest_encryption_enabled %>
+          <div><span><i class="mr-2 text-success fas fa-check"></i>At Rest</span></div>
+        <% else %>
+          <div><span><i class="mr-2 text-danger fas fa-times"></i>At Rest</span></div>
+        <% end %>
+      </div>
+    </div>
+    <%= render partial: "tag_list", locals: { tags: @cluster.tags } %>
+  <% end %> <!-- end infrastructure_view -->
+  <%= render_annotation_for(@cluster) %>
+
+  </div>
+</div>

@@ -1,0 +1,29 @@
+class AwsEksNodegroupEntity < ResourceEntity
+  expose :nodegroup_name, expose_nil: false
+  expose :nodegroup_arn, expose_nil: false
+  expose :cluster_name, expose_nil: false
+  expose :version, expose_nil: false
+  expose :release_version, expose_nil: false
+  expose :nodegroup_created_at, expose_nil: false
+  expose :nodegroup_modified_at, expose_nil: false
+  expose :status, expose_nil: false
+  expose :capacity_type, expose_nil: false
+  expose :scaling_min_size, expose_nil: false
+  expose :scaling_max_size, expose_nil: false
+  expose :scaling_desired_size, expose_nil: false
+  expose :instance_types, expose_nil: false
+  expose :subnets, expose_nil: false
+  expose :ec2_ssh_key, expose_nil: false
+  expose :source_security_groups, expose_nil: false
+  expose :ami_type, expose_nil: false
+  expose :node_role, expose_nil: false
+  expose :labels, expose_nil: false
+  expose :taints, expose_nil: false
+  expose :resources, expose_nil: false
+  expose :disk_size, expose_nil: false
+  expose :health, expose_nil: false
+  expose :launch_template_name, expose_nil: false
+  expose :launch_template_id, expose_nil: false
+  expose :launch_template_version, expose_nil: false
+  expose :tags, expose_nil: false
+end

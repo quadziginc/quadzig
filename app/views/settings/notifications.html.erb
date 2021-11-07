@@ -1,0 +1,23 @@
+<% if @outdated_cf_template %>
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">Support for new AWS Services Available</h4>
+    <p>Quadzig now supports visualizing new resources like EKS Clusters & EKS Nodegroups. To enable this feature and other resources planned for the near future, you have to update the IAM Role with new permissions.</p>
+    <p>To do this, you can click on "Update Required" button in the Accounts list to update the Cloudformation Template used to deploy the IAM Role.</p>
+    <p class="font-weight-bold">You can also delete the AWS Account from Quadzig and re-add them to update the permissions.</p>
+    <h5>What's changing?</h5>
+    <span>The new IAM policy requests additional read-only IAM permissions. <a target="blank" href="<%= @latest_cf_template.cf_link %>">You can view the latest permissions here.</a></span>
+    <p><span class="font-weight-bold">Note:</span> You are free to reduce the scope of the IAM role if you prefer not to provide Quadzig with permissions to specific cloud resources. In this case, the visualizations will not contain the resources for which permissions are not provided.</p>
+    <p>For example, you can remove <code>ec2:DescribeInstances</code> from the IAM role and the visualizations will no longer have updated EC2 information.</p>
+    <hr>
+    <a class="btn btn-primary" href="/">Go to Accounts</a>
+  </div>"""
+<% elsif @notifications %>
+  <% @notifications.each do |notification| %>
+    <%= raw notification.message %>
+  <% end %>
+<% else %>
+  <div class="alert alert-success" role="alert">
+    <h4 class="alert-heading">You are all set!</h4>
+    <p>You don't have any notifications to take care of. Yay!</p>
+  </div>
+<% end %>

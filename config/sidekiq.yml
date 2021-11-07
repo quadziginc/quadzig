@@ -1,0 +1,17 @@
+---
+:concurrency: 20
+staging:
+  :concurrency: 50
+production:
+  # If you change this, change the value in sidekiq_and_redis.rb file as well
+  :concurrency: 50
+# The order of the queues are important
+# This order means that jobs in the mailer queue
+# will only be processed when payments & accounts
+# queues are empty
+:queues:
+  - accounts
+  - payments
+  - mailers
+  - default
+  - discovery

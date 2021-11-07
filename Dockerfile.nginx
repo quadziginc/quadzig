@@ -1,0 +1,9 @@
+FROM nginx:1.19.6-alpine
+
+RUN apk add gettext
+COPY ./nginx/nginx.conf .
+COPY start_proxy.sh .
+
+EXPOSE 80
+
+CMD ["/start_proxy.sh"]

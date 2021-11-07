@@ -1,0 +1,5 @@
+<div class="mt-1 d-flex">
+  <small><strong class="add-tooltip pl-0 mr-2" data-toggle="tooltip" data-placement="top" title="AWS Account ID"><%= @account_info[resource.aws_account_id][:account_id] %></strong></small>
+  <small><strong class="add-tooltip pl-0 mr-2" data-toggle="tooltip" data-placement="top" title="AWS Region"><%= resource.region_code %></strong></small>
+  <small><strong class="add-tooltip text-truncate pl-0 mr-2" data-toggle="tooltip" data-placement="top" title="Account Name"><%= @account_info[resource.aws_account_id][:account_name] %></strong></small>
+</div>

@@ -1,0 +1,35 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @vpc.vpc_id %></div>
+        <% if @vpc.is_default %>
+          <span class="badge badge-primary">Default</span>
+        <% end %>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:vpc, @vpc.vpc_id, @vpc.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @vpc } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Region</h5>
+      </div>
+      <p class="mb-0"><%= @vpc.region_code %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>CIDR Block</h5>
+      </div>
+      <p class="mb-0"><%= @vpc.cidr_block %></p>
+    </div>
+
+    <%= render partial: "tag_list", locals: { tags: @vpc.tags } %>
+    <%= render_annotation_for(@vpc) %>
+  </div>
+</div>
+

@@ -1,0 +1,15 @@
+<% permissions.each do |perm| %>
+  <% perm['user_id_group_pairs'].each do |pair| %>
+    <tr>
+      <td><%= clickable_aws_console_link(:ec2_security_group, sg.group_id, sg.region_code) %></td>
+      <td><%= perm['ip_protocol'] == '-1' ? 'All' : perm['ip_protocol'] %></td>
+      <% if perm['from_port'] == perm['to_port'] && perm['from_port'].nil? %>
+        <td>All</td>
+      <% else %>
+        <td><%= perm['from_port'] == perm['to_port'] ? perm['from_port'] : "#{perm['from_port']} - #{perm['to_port']}" %></td>
+      <% end %>
+      <td><%= clickable_aws_console_link(:ec2_security_group, pair['group_id'], sg.region_code) %></td>
+      <td><span class="text-truncate"><%= pair['description'] %></span></td>
+    </tr>
+  <% end %>
+<% end %>

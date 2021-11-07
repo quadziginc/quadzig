@@ -1,0 +1,29 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @cluster.cluster_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:ecs_cluster, @cluster.cluster_name, @cluster.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @cluster } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Status</h5>
+      </div>
+      <h5>
+        <% if ["ACTIVE", "PROVISIONING"].include? @cluster.status %>
+          <p class="badge badge-success mb-0"><%= @cluster.status %></p>
+        <% elsif ["FAILED", "DEPROVISIONING", "INACTIVE"].include? @cluster.status %>
+          <p class="badge badge-danger mb-0"><%= @cluster.status %></p>
+        <% end %>
+      </h5>
+    </div>
+    <%= render_annotation_for(@cluster) %>
+  </div>
+</div>

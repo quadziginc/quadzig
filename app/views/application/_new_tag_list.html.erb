@@ -1,0 +1,33 @@
+<!-- Looks like AWS has started introducing a new format for tags for newer -->
+<!-- resource types like EKS Clusters & Nodegroups -->
+<!-- In this new format, instead of [{"key" => "Env", "Value" => "prd"}] format -->
+<!-- the simpler format of [{"Env" => "prd"}] is used -->
+<!-- So, depending on the resource type, you can use either new_tag_list partial or tag_list partial -->
+<div class="list-group-item">
+  <div class="d-flex w-100 justify-content-between">
+    <h5>Tags</h5>
+  </div>
+
+  <% if tags.empty? %>
+    <span>Tags not available</span>
+  <% else %>
+    <div class="overflow-auto">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tags.each do |key, value| %>
+            <tr>
+              <td><%= key %></td>
+              <td><%= value %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

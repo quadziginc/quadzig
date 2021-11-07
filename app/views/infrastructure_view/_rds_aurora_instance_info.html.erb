@@ -1,0 +1,108 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @db.db_instance_identifier %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:rds_aurora_db_instance, @db.db_instance_identifier, @db.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @db } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Instance Class</h5>
+      </div>
+      <p class="mb-0"><%= @db.db_instance_class %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Engine</h5>
+      </div>
+      <p class="mb-0"><%= @db.engine %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Endpoint</h5>
+      </div>
+      <p class="mb-0"><%= @db.endpoint_address %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Allocated Storage</h5>
+      </div>
+      <p class="mb-0"><%= @db.allocated_storage %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Availability Zone</h5>
+      </div>
+      <p class="mb-0"><%= @db.availability_zone %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Multi AZ</h5>
+      </div>
+      <p class="mb-0"><%= @db.multi_az %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Engine Version</h5>
+      </div>
+      <p class="mb-0"><%= @db.engine_version %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>IOPS</h5>
+      </div>
+      <p class="mb-0"><%= @db.iops %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Publicly Accessible</h5>
+      </div>
+      <p class="mb-0"><%= @db.publicly_accessible %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>Deletion Protection</h5>
+      </div>
+      <p class="mb-0"><%= @db.deletion_protection %></p>
+    </div>
+    <div class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5>VPC Id</h5>
+      </div>
+      <%= clickable_aws_console_link(:vpc, @db.vpc_id,  @db.region_code) %>
+    </div>
+    <% if @db.tag_list.count > 0 %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Tags</h5>
+        </div>
+        <div class="overflow-auto">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Key</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @db.tag_list.each do |tag| %>
+                <tr>
+                  <td><%= tag["key"] %></td>
+                  <td><%= tag["value"] %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+    <%= render_annotation_for(@db) %>
+  </div>
+</div>

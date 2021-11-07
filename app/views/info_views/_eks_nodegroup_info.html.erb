@@ -1,0 +1,127 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @nodegroup.nodegroup_name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= eks_nodegroup_link(@nodegroup) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @nodegroup } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+    <% if controller.controller_name == 'resiliency_view' %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <% if %w(CREATING ACTIVE UPDATING).include? @nodegroup.status %>
+          <h5><span class="badge-lg badge badge-success"><%= @nodegroup.status %></span></h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-danger"><%= @nodegroup.status %></span></h5>
+        <% end %>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Issues</h5>
+        </div>
+        <% issues = @nodegroup.health.to_h.fetch("issues", []) %>
+        <% if issues.empty? %>
+          <p>No health issues found.</p>
+        <% else %>
+          <h5>
+            <span class="badge-lg badge badge-danger">Health Issues Found</span>
+            <a href="https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html#troubleshoot-managed-node-groups" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="This nodegroup is experiencing health issues."></i></a>
+          </h5>
+          <% @nodegroup.health.to_h.fetch("issues", []).each do |issue| %>
+            <p class="font-weight-bold mb-0"><%= issue.fetch("code", "Unknown") %></p>
+            <span><%= issue.fetch("message", "Unknown") %></span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if ['infrastructure_view', 'network_view'].include? controller.controller_name %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <p class="mb-0"><%= @nodegroup.status %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Capacity Type</h5>
+        </div>
+        <p class="mb-0"><%= @nodegroup.capacity_type %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Scaling Config</h5>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <span class="font-weight-bold">Min</span>
+          </div>
+          <div class="col-md-4">
+            <h5><span class="badge badge-success"><%= @nodegroup.scaling_min_size %></span></h5>
+          </div>
+          <div class="col-md-8">
+            <span class="font-weight-bold">Max</span>
+          </div>
+          <div class="col-md-4">
+            <h5><span class="badge badge-success"><%= @nodegroup.scaling_max_size %></span></h5>
+          </div>
+          <div class="col-md-8">
+            <span class="font-weight-bold">Desired</span>
+          </div>
+          <div class="col-md-4">
+            <h5><span class="badge badge-success"><%= @nodegroup.scaling_desired_size %></span></h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- If Launch Template is associated, then instance_types is nil -->
+      <% unless @nodegroup.launch_template_id %>
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5>Instance Types</h5>
+          </div>
+          <% @nodegroup.instance_types.to_a.each do |instance_type| %>
+            <p class="mt-0 mb-0"><%= instance_type %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if @nodegroup.ec2_ssh_key %>
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5>SSH Key Name</h5>
+          </div>
+          <p class="mt-0 mb-0"><%= clickable_aws_console_link(:ec2_keypair, @nodegroup.ec2_ssh_key, @nodegroup.region_code) %></p>
+        </div>
+      <% end %>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Node Role</h5>
+        </div>
+        <p class="mt-0 mb-0"><%= clickable_aws_console_link(:iam_role, @nodegroup.node_role.split("/")[-1], 'us-east-1') %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>ASG</h5>
+        </div>
+        <p class="mt-0 mb-0"><%= clickable_aws_console_link(:ec2_asg, ((@nodegroup.resources.to_h.fetch("auto_scaling_groups", {}))[0]).to_h.fetch("name", "Unknown"), @nodegroup.region_code) %></p>
+        </div>
+      </div>
+      <%= render partial: "new_tag_list", locals: { tags: @nodegroup.tags } %>
+    <% end %> <!-- end infrastructure_view -->
+    <%= render_annotation_for(@nodegroup) %>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="card-header">
+  <div class="no-gutters row">
+    <div class="col-lg-10">
+      <h4 class="card-title mb-0">
+        <div class="text-truncate"><%= @cluster.name %></div>
+        <a class="w-100 mt-2 btn btn-primary" target="_blank" href="<%= aws_console_link(:eks_cluster, @cluster.name, @cluster.region_code) %>">Open in AWS Console</a>
+        <%= render partial: "last_updated_time", locals: { resource: @cluster } %>
+      </h4>
+    </div>
+    <%= render partial: "sidebar_resizers" %>
+  </div>
+</div>
+<div class="overflow-auto card-body p-0">
+  <div class="list-group list-group-flush">
+
+    <% if controller.controller_name == 'resiliency_view' %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Version</h5>
+        </div>
+        <% if ["1.16", "1.17"].include? @cluster.version %>
+          <h5>
+            <span class="badge-lg badge badge-danger">
+              <%= @cluster.version %>
+            </span>
+            <a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-monitoring.html" target="_blank"><i class="fas fa-external-link-alt add-tooltip" data-toggle="tooltip" data-placement="top" title="This version of EKS is approaching end-of-life"></i></a>
+          </h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-success"><%= @cluster.version %></span></h5>
+        <% end %>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <% if %w(CREATING ACTIVE UPDATING).include? @cluster.status %>
+          <h5><span class="badge-lg badge badge-success"><%= @cluster.status %></span></h5>
+        <% else %>
+          <h5><span class="badge-lg badge badge-danger"><%= @cluster.status %></span></h5>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if ['infrastructure_view', 'network_view'].include? controller.controller_name %>
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Status</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.status %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Version</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.version %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Endpoint</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.endpoint %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>VPC ID</h5>
+        </div>
+        <p class="mb-0"><%= clickable_aws_console_link(:vpc, @cluster.resources_vpc_config.fetch("vpc_id", ""), @cluster.region_code) %></p>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Endpoint Type</h5>
+        </div>
+        <% if @cluster.resources_vpc_config.fetch("endpoint_public_access") %>
+          <h5><span class="badge-lg badge badge-primary">Public</span></h5>
+          <% @cluster.resources_vpc_config.fetch("public_access_cidrs", []).each do |cidr| %>
+            <p class="mt-0 mb-0"><%= cidr %></p>
+          <% end %>
+        <% else %>
+          <h5><span class="badge-lg badge badge-primary">Private</span></h5>
+        <% end %>
+      </div>
+
+      <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5>Platform Version</h5>
+        </div>
+        <p class="mb-0"><%= @cluster.platform_version %></p>
+      </div>
+    </div>
+    <%= render partial: "new_tag_list", locals: { tags: @cluster.tags } %>
+  <% end %> <!-- end infrastructure_view -->
+  <%= render_annotation_for(@cluster) %>
+
+  </div>
+</div>

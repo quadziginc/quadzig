@@ -1,0 +1,13 @@
+#settings-preferences {
+	.dot {
+		height: 9px;
+		width: 9px;
+		background-color: #3c4b64;
+		border-radius: 50%;
+		margin-right: 5px;
+	}
+
+	#deleteMfaDevice {
+		cursor: pointer;
+	}
+}
