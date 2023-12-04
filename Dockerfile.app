@@ -1,4 +1,4 @@
-FROM public.ecr.aws/f1h7x2r4/ruby-with-rails:v1
+FROM ruby:3.2-alpine
 
 WORKDIR /app
 COPY . .
