@@ -8,7 +8,7 @@ gem 'rails', '~> 7.0.0'
 # Use Puma as the app server
 gem 'puma', '~> 6.0'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker', '~> 6.0'
+gem 'webpacker', '~> 5.4.4'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
@@ -28,9 +28,9 @@ gem "sidekiq-cron", "~> 1.1"
 gem 'redis'
 gem 'dotenv-rails'
 gem 'excon', '~> 0.71.0'
-gem 'json-jwt', '~> 1.11.0'
-gem 'pagy', '~> 4.10', '>= 4.10.1'
-gem 'pg', '~> 0.18'
+gem 'json-jwt', '~> 1.16.0'
+gem 'pagy', '~> 6.2'
+gem 'pg', '~> 1.5.4'
 gem 'stripe'
 gem "sentry-ruby"
 gem "sentry-rails"
@@ -42,9 +42,9 @@ gem 'mimemagic', github: 'mimemagicrb/mimemagic', ref: '01f92d86d15d85cfd0f20dab
 
 gem 'lograge', '~> 0.11.2'
 gem 'rubyzip', '~> 2.3.0'
-gem 'elasticsearch', '~> 7.12.0'
+gem 'elasticsearch', '~> 8.11.0'
 gem 'grape-entity', '~> 0.9.0'
-gem 'faraday_middleware-aws-sigv4', '~> 0.5.0'
+gem 'faraday_middleware-aws-sigv4', '~> 1.0.1'
 gem 'elasticsearch-dsl'
 gem 'parslet'
 gem 'rqrcode'
@@ -62,7 +62,7 @@ group :development do
   # Display performance information such as SQL time and flame graphs for each request in your browser.
   # Can be configured to work on production as well see: https://github.com/MiniProfiler/rack-mini-profiler/blob/master/README.md
   gem 'rack-mini-profiler', '~> 3.0'
-  gem 'listen', '~> 3.3'
+  gem 'listen', '~> 3.8'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'pry'

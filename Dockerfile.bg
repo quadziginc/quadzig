@@ -7,9 +7,9 @@ ENV BUNDLER_WITHOUT="development test"
 RUN apk update
 RUN apk add git
 RUN apk add --no-cache build-base
+RUN apk add postgresql-dev
 
-RUN gem install bundler
-RUN gem install date
-RUN bundle install -V
+RUN gem install bundler:2.4.2
+RUN bundle _2.4.2_ install -V
 
 CMD ["bundle", "exec", "sidekiq"]

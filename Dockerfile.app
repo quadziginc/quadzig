@@ -6,11 +6,18 @@ ENV BUNDLER_WITHOUT="development test"
 ENV ASSET_PRECOMPILE=1
 
 RUN apk update
+RUN apk add --no-cache build-base
+
+RUN apk add --update npm
+RUN apk add --update nodejs npm
+
 RUN apk add curl yarn postgresql-dev build-base tzdata git
+
 RUN gem install bundler
-RUN gem install pg -v '0.18.4' -- --with-cflags="-Wno-error=implicit-function-declaration"
+RUN gem install pg -v '1.5.4' -- --with-cflags="-Wno-error=implicit-function-declaration"
 
 RUN yarn install
+
 RUN bundle install -V
 RUN rails assets:clean
 RUN rails assets:precompile

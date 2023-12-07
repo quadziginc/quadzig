@@ -1,8 +1,8 @@
-module.exports = function(api) {
+@babel/plugin-transform-class-properties@babel/plugin-transform-class-propertiesmodule.exports = function(api) {
   var validEnv = ['development', 'test', 'production']
   var currentEnv = api.env()
   var isDevelopmentEnv = api.env('development')
-  var isProductionEnv = api.env('production')
+  var isProductionEnv = api.env('production')@babel/plugin-transform-object-rest-spread
   var isTestEnv = api.env('test')
 
   if (!validEnv.includes(currentEnv)) {
@@ -30,7 +30,7 @@ module.exports = function(api) {
         {
           forceAllTransforms: true,
           useBuiltIns: 'entry',
-          corejs: 3,
+          corejs: 3.22,
           modules: false,
           exclude: ['transform-typeof-symbol']
         }
