@@ -6,7 +6,7 @@
     "@rails/actioncable": "^7.0.0",
     "@rails/activestorage": "^7.0.0",
     "@rails/ujs": "^7.0.0",
-    "@rails/webpacker": "5.4.4",
+    "shakapacker": "6.5.2",
     "@sentry/browser": "^7.85.0",
     "@sentry/tracing": "7.85.0",
     "axios": "^1.6.2",
@@ -31,6 +31,6 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.2.0"
   }
 }

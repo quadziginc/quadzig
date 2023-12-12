@@ -8,7 +8,7 @@ gem 'rails', '~> 7.0.0'
 # Use Puma as the app server
 gem 'puma', '~> 6.0'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem 'webpacker', '~> 5.4.4'
+gem 'shakapacker', '~> 6.5.2'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
