@@ -48,7 +48,7 @@
         }
       ],
       [
-        '@babel/plugin-proposal-transform-rest-spread',
+        '@babel/plugin-transform-rest-spread',
         {
           useBuiltIns: true
         }

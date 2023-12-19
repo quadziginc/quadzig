@@ -8,8 +8,8 @@ ENV ASSET_PRECOMPILE=1
 RUN apk update
 RUN apk add --no-cache build-base
 
-RUN apk add --update npm
-RUN apk add --update nodejs npm
+RUN apk add nodejs npm
+RUN apk add --update nodejs=20.10.0-r1
 
 RUN apk add curl yarn postgresql-dev build-base tzdata git
 
