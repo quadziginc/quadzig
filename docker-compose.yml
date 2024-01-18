@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build:
+      context: .
+      dockerfile: dockerfile.nginx
+    ports:
+      - '80:80'
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server #/quadzigg/config/initializers/redis.rb
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+     # - redis.conf:/quadzigg/config/initializers
+
+  sidekiq:
+    depends_on:
+      - 'redis'
+      - 'db'
+    build:
+      context: .
+      dockerfile: dockerfile.bg
+    volumes:
+      - .:/myapp
+    env_file:
+      - .env
+
+  db:
+     image: postgres:16-alpine
+     environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: secret
+     restart: always
+     volumes:
+       - postgres:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: dockerfile.app
+    environment:
+      RAILS_ENV: test
+      DB_USERNAME: quadzig
+      DB_PASSWORD: password
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: quadzig_test
+    volumes:
+      - .:/myapp
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+    restart: on-failure:3
+    env_file:
+      - .env
+
+volumes:
+  myapp:
+  postgres:
+  redis:

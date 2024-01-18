@@ -13,5 +13,3 @@ RUN gem install bundler:2.4.2
 RUN bundle _2.4.2_ install -V
 
 CMD ["bundle", "exec", "sidekiq"]
-
-EXPOSE 6379

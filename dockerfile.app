@@ -9,7 +9,7 @@ RUN apk update
 RUN apk add --no-cache build-base
 
 RUN apk add nodejs npm
-RUN apk add --update nodejs=20.10.0-r1
+RUN apk add --update nodejs=20.11.0-r0
 
 RUN apk add curl yarn postgresql-dev build-base tzdata git
 
@@ -19,6 +19,7 @@ RUN gem install pg -v '1.5.4' -- --with-cflags="-Wno-error=implicit-function-dec
 RUN yarn install
 
 RUN bundle install -V
+RUN rails webpacker:install
 RUN rails assets:clean
 RUN rails assets:precompile
 RUN rails webpacker:compile
