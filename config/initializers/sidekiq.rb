@@ -6,7 +6,7 @@ if ENV['ASSET_PRECOMPILE'].to_i == 0
   # Should be sidekiq pool size + 2
   # Should probably not hardcode this.
   # TODO: change to env var later.
- REDIS_POOL = ConnectionPool.new(size: 52) { Redis.new(url: ENV['REDIS_URI']) }
+ REDIS_POOL = ConnectionPool.new(size: 52) { ENV['REDIS_URI'] }
  Sidekiq.configure_server do |config|
     config.redis = REDIS_POOL
     config.logger.formatter = Sidekiq::Logger::Formatters::JSON.new

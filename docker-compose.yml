@@ -28,8 +28,10 @@ services:
       dockerfile: dockerfile.bg
     volumes:
       - .:/myapp
-    env_file:
-      - .env
+    environment:
+      - REDIS_URI=redis://redis:6379
+# redis://redis:6379/1: This specifies the Redis server at host redis on port 6379 and uses database 1.
+# with the /1 omitted it resolves to database /0
 
   db:
      image: postgres:16-alpine
