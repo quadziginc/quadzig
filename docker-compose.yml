@@ -50,7 +50,7 @@ services:
       RAILS_ENV: test
       DB_USERNAME: quadzig
       DB_PASSWORD: password
-      DB_HOST: localhost
+      DB_HOST: db
       DB_PORT: 5432
       DB_NAME: quadzig_test
     volumes:
